@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
@@ -138,11 +137,8 @@ func main() {
 	serverapi.HandleFunc("/hostinfo", ServeAPI)
 
 	serverhttp := http.NewServeMux()
-	rootdir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	serverhttp.Handle("/", http.FileServer(http.Dir(rootdir+"/../front")))
+	var rootdir string = "/var/sysmonitor"
+	serverhttp.Handle("/", http.FileServer(http.Dir(rootdir)))
 
 	// Run API
 	go http.ListenAndServe(":8000", serverapi)
