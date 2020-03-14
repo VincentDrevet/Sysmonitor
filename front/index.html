@@ -1,0 +1,85 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <title>Sysmonitor</title>
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper grey darken-3">
+          <a href="#" class="brand-logo">Sysmonitor</a>
+        </div>
+      </nav>
+    <div class="row"></div>
+    <div class="row">
+        <div class="col s4" id="infos_systeme">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Informations : </th>
+                        <th>Valeurs : </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Nom d'hôte</td>
+                        <td id="hostname"></td>
+                    </tr>
+                    <tr>
+                        <td>uptime</td>
+                        <td id="uptime"></td>
+                    </tr>
+                    <tr>
+                        <td>os</td>
+                        <td id="os"></td>
+                    </tr>
+                    <tr>
+                        <td>Version de noyau</td>
+                        <td id="kernelVersion"></td>
+                    </tr>
+                    <tr>
+                        <td>Architecture</td>
+                        <td id="arch"></td>
+                    </tr>
+                    <tr>
+                        <td>hostid</td>
+                        <td id="hostid"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col s4">
+            <p>Consommation CPU : </p>
+            <canvas id="ChartCPU", width="400", height="400"></canvas>
+        </div>
+        <div class="col s4">
+            <p>Consommation RAM : </p>
+            <canvas id="ChartRAM", width="400", height="400"></canvas>
+        </div>
+        <div class="row">
+            <div class="col s3">
+                <table id="net_table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Adresse MAC</th>
+                            <th>MTU</th>
+                            <th>IP</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div> 
+    </div>
+    
+    <script src="main.js"></script>
+</body>
+</html>
