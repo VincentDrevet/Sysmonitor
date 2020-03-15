@@ -10,7 +10,15 @@ import (
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/net"
+	"gopkg.in/ini.v1"
 )
+
+// Conf : Struct contenant les informations de configuration
+type Conf struct {
+	httpEnable string
+	apiPORT    string
+	httpPORT   string
+}
 
 // HostInfo contient les attributs des informations systèmes de l'hote
 type HostInfo struct {
@@ -108,6 +116,25 @@ func GetHostInfo() HostInfo {
 	return hostinfo
 }
 
+// GetSettings retourne sous la forme d'une struct les paramètres de configuration contenu dans le fichier de conf
+func GetSettings(configfilepath string) Conf {
+
+	cfg, err := ini.Load(configfilepath)
+	if err != nil {
+		panic(err)
+	}
+
+	var settings Conf
+
+	settings.httpEnable = cfg.Section("global").Key("ENABLEHTTP").String()
+
+	settings.apiPORT = cfg.Section("net").Key("APIPORT").String()
+
+	settings.httpPORT = cfg.Section("net").Key("HTTPPORT").String()
+
+	return settings
+}
+
 // ServeAPI est une fonction permettant d'exposer en JSON les informations récupéré par la fonction GetHostInfo
 func ServeAPI(responsewriter http.ResponseWriter, r *http.Request) {
 
@@ -126,12 +153,8 @@ func ServeAPI(responsewriter http.ResponseWriter, r *http.Request) {
 
 func main() {
 
+	var settings Conf = GetSettings("/usr/local/etc/sysmonitor/sysmonitor.conf")
 	finish := make(chan bool)
-	/*
-		fmt.Println("API lancé")
-		http.HandleFunc("/hostinfo", handler)
-		go http.ListenAndServe(":8000", nil)
-	*/
 
 	serverapi := http.NewServeMux()
 	serverapi.HandleFunc("/hostinfo", ServeAPI)
@@ -141,10 +164,12 @@ func main() {
 	serverhttp.Handle("/", http.FileServer(http.Dir(rootdir)))
 
 	// Run API
-	go http.ListenAndServe(":8000", serverapi)
+	go http.ListenAndServe(settings.apiPORT, serverapi)
 
-	// RUN APP
-	go http.ListenAndServe(":8001", serverhttp)
+	if settings.httpEnable == "true" {
+		// RUN APP
+		go http.ListenAndServe(settings.httpPORT, serverhttp)
+	}
 
 	<-finish
 
